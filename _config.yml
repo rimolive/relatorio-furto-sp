@@ -1,0 +1,22 @@
+name: Relatório de furto de celulares em São Paulo
+description:  Um relatório interativo sobre ocorrências de furto de celular na cidade de São Paulo entre os anos de 2014 e 2017.
+url: https://rimolive.github.io/relatorio-furto-sp
+
+baseurl: /relatorio-furto-sp
+github: 'rimolive/relatorio-furto-sp'
+markdown: kramdown
+
+exclude:
+  - README.md
+  - CONTRIBUTING.md
+
+collections:
+  scripts: {}
+  reports: {}
+
+defaults:
+- scope:
+    path: ""
+  values:
+    menu_template: menu.html
+    menu_entry: Welcome
