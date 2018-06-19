@@ -1,0 +1,114 @@
+---
+title: "Análise dos Furtos de celulares em grandes eventos públicos"
+author: "Ricardo Martinelli e Renato Monteiro"
+date: "21 de Junho de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, results=FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(xts)
+library(leaflet)
+
+plot_time <- function(dataset, ano) {
+  #Filtra o dataset de acordo com o ano
+  dataset <- dataset %>%
+    filter(ANO_BO == ano) %>%
+    group_by(DATAOCORRENCIA) %>%
+    summarise(QUANTIDADE = n())
+  
+  dataset$DATAOCORRENCIA <- as.Date(dataset$DATAOCORRENCIA, "%d/%m/%Y")
+  dataset <- dataset %>% filter(DATAOCORRENCIA >= as.Date(paste("01/01", ano, sep="/"), "%d/%m/%Y"))
+  dataset <- xts(dataset$QUANTIDADE, order.by = dataset$DATAOCORRENCIA)
+  plot(dataset)
+}
+
+
+load('furto.RData')
+```
+
+## Agenda
+
+- Histórico
+- Análise dos dados
+- Machine Learning
+- Conclusões
+
+## Histórico
+
+- Datasets da Secretaria de Segurança Pública do Estado de São Paulo: <http://www.ssp.sp.gov.br/transparenciassp>
+- Início de um projeto pessoal: <https://rimolive.github.io/mapa-crime-sp/>
+
+## Análise dos dados (1/3)
+
+- __Crime__: furto de celular
+- __Ano__: Entre 2014 e 2017
+- __Cidade__: São Paulo
+
+## Análise dos dados (2/3)
+
+- Dimensões do dataset:
+  - Linhas: `r nrow(furto.dataset)`
+  - Colunas: `r ncol(furto.dataset)`
+
+## Análise dos dados (3/3)
+
+- Uma breve descrição dos dados:
+
+```{r  summary}
+names(furto.dataset)
+```
+
+## Visualizações dos dados
+
+```{r barplot}
+ggplot(furto.dataset, aes(ANO_BO)) +
+  labs(x="Ano", y ="Número de BOs registrados", title="Quantidade de BOs registrados por ano em São Paulo") + 
+  geom_bar()
+```
+
+## Visualização dos dados
+
+```{r timeplot}
+par(mfrow=c(2, 2))
+plot_time(furto.dataset, '2014')
+plot_time(furto.dataset, '2015')
+plot_time(furto.dataset, '2016')
+plot_time(furto.dataset, '2017')
+```
+
+## Visualização dos dados
+
+```{r geodata, warning=FALSE}
+leaflet(mapa.2014) %>%
+  addTiles() %>%
+  setView(-46.6333824, -23.5506507, zoom=10) %>%
+  addMarkers(lng=~lon, lat=~lat)
+```
+
+# Será que os furtos de celulares ocorrem com mais frequência em grandes eventos?
+
+## Ferramentas Utlizadas
+
+- Python para "scrapping" dos dados
+- Linguagem R para análise dos dados
+  - tidyverse
+  - xts
+  - leaflet
+  - ggmap
+- caret(R) para Machine Learning
+
+## Algoritmo utilizado
+
+- 
+
+## Conclusões
+
+- Os dados não permitem esboçar uma conclusão sobre a pergunta
+- 
+
+# Obrigado!
+
+<https://github.com/rimolive/relatorio-furto-sp>
