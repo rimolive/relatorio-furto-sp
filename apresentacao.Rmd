@@ -103,7 +103,7 @@ plot_time(furto.dataset, '2016')
 plot_time(furto.dataset, '2017')
 ```
 
-# É possível estimar o público estimado em grandes eventos com base na quantidade de furto de celulares?
+# É possível estimar o público de grandes eventos com base na quantidade de furtos de celular?
 
 ## Os eventos analisados
 
