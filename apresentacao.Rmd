@@ -14,6 +14,8 @@ library(leaflet)
 library(caret)
 library(corrplot)
 
+options(scipen=10)
+
 plot_time <- function(dataset, ano) {
   #Filtra o dataset de acordo com o ano
   dataset <- dataset %>%
@@ -137,6 +139,7 @@ corrplot(cor(eventos[, -2]))
 ## Resultados
 
 ```{r results, warning=FALSE}
+eventos <- na.omit(eventos)
 index <- createDataPartition(eventos$Evento,
                              p=0.8,
                              list=FALSE,
