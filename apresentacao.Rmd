@@ -65,7 +65,6 @@ names(furto.dataset)
 
 ## Visualizações dos dados
 
-- Uma amostra de ~500 furtos registrados na cidade em 2014:
 ```{r barplot}
 ggplot(furto.dataset, aes(ANO_BO)) +
   labs(x="Ano", y ="Número de BOs registrados", title="Quantidade de BOs registrados por ano em São Paulo") + 
@@ -84,6 +83,7 @@ plot_time(furto.dataset, '2017')
 
 ## Visualização dos dados
 
+- Uma amostra de ~500 furtos registrados na cidade em 2014:
 ```{r geodata, warning=FALSE}
 leaflet(mapa.2014) %>%
   addTiles() %>%
