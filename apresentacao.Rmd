@@ -1,5 +1,5 @@
 ---
-title: "Análise dos Furtos de celulares em grandes eventos públicos"
+title: "Análise dos furtos de celulares em grandes eventos públicos"
 author: "Ricardo Martinelli e Renato Monteiro"
 date: "21 de Junho de 2018"
 output: ioslides_presentation
@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(xts)
 library(leaflet)
+library(caret)
+library(corrplot)
 
 plot_time <- function(dataset, ano) {
   #Filtra o dataset de acordo com o ano
@@ -63,6 +65,7 @@ names(furto.dataset)
 
 ## Visualizações dos dados
 
+- Uma amostra de ~500 furtos registrados na cidade em 2014:
 ```{r barplot}
 ggplot(furto.dataset, aes(ANO_BO)) +
   labs(x="Ano", y ="Número de BOs registrados", title="Quantidade de BOs registrados por ano em São Paulo") + 
@@ -71,7 +74,7 @@ ggplot(furto.dataset, aes(ANO_BO)) +
 
 ## Visualização dos dados
 
-```{r timeplot}
+```{r timeplot1}
 par(mfrow=c(2, 2))
 plot_time(furto.dataset, '2014')
 plot_time(furto.dataset, '2015')
@@ -90,6 +93,27 @@ leaflet(mapa.2014) %>%
 
 # Será que os furtos de celulares ocorrem com mais frequência em grandes eventos?
 
+## 
+
+```{r timeplot2}
+par(mfrow=c(2, 2))
+plot_time(furto.dataset, '2014')
+plot_time(furto.dataset, '2015')
+plot_time(furto.dataset, '2016')
+plot_time(furto.dataset, '2017')
+```
+
+# É possível estimar o público estimado em grandes eventos com base na quantidade de furto de celulares?
+
+## Os eventos analisados
+
+- Carnaval
+- Parada Gay
+- Marcha para Jesus
+- Virada Cultural
+- Virada Esportiva
+- Copa do Mundo (Somente em 2014)
+
 ## Ferramentas Utlizadas
 
 - Python para "scrapping" dos dados
@@ -98,16 +122,60 @@ leaflet(mapa.2014) %>%
   - xts
   - leaflet
   - ggmap
-- caret(R) para Machine Learning
+- Biblioteca caret para Machine Learning
 
 ## Algoritmo utilizado
 
-- 
+- Regressão Linear
+
+## Resultados
+
+```{r corrplot}
+corrplot(cor(eventos[, -2]))
+```
+
+## Resultados
+
+```{r results, warning=FALSE}
+index <- createDataPartition(eventos$Evento,
+                             p=0.8,
+                             list=FALSE,
+                             times=1)
+
+eventos.train <- eventos[index, ]
+eventos.test <- eventos[-index, ]
+
+fitControl <- trainControl(method="cv",
+             number=10)
+
+set.seed(849)
+lmFit <- train(Publico ~ .,
+               data=eventos.train,
+               method="lm",
+               trControl=fitControl,
+               verbose=FALSE)
+
+lmFit
+```
+
+## Resultados
+
+```{r results2, warning=FALSE}
+pred <- predict(lmFit, eventos.test)
+p <- c(pred[1], pred[2], pred[3], pred[4])
+prediction <- data.frame(ano = eventos.test$Ano,
+                         evento = eventos.test$Evento,
+                         publico = eventos.test$Publico,
+                         previsto = p)
+prediction
+```
 
 ## Conclusões
 
-- Os dados não permitem esboçar uma conclusão sobre a pergunta
-- 
+- Os dados não permitem esboçar uma conclusão sobre as perguntas
+  - Correlação não implica em causalidade
+- Apesar dos poucos dados e muitos inexistentes, podemos ao menos inferir algo sobre eles
+- O dados nos deram a oportunidade de aprender sobre as ferramentas
 
 # Obrigado!
 
