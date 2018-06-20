@@ -173,6 +173,14 @@ prediction <- data.frame(ano = eventos.test$Ano,
 prediction
 ```
 
+## Resultados
+
+```{r results3}
+ggplot(eventos, aes(Ocorrencias, Publico)) +
+  geom_point() + 
+  geom_smooth(method="lm",se=FALSE)
+```
+
 ## Conclusões
 
 - Os dados não permitem esboçar uma conclusão sobre as perguntas
